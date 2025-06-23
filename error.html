@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>ZENATA BACKDOOR</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden; /* ⛔ HILANGKAN GESER */
+      height: 100%;
+      font-family: 'Courier New', Courier, monospace;
+      background-color: black;
+      color: red;
+    }
+
+    .background-text {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      text-align: center;
+      white-space: pre-wrap;
+      font-size: 2.5vw;
+      font-weight: bold;
+      color: rgba(255, 0, 0, 0.2);
+      text-shadow:
+        0 0 10px red,
+        0 0 30px red,
+        0 0 50px red;
+      line-height: 1.8;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: rgba(255, 0, 0, 0.05);
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .countdown {
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      font-size: 24px;
+      color: white;
+      z-index: 3;
+    }
+
+    .terminal {
+      position: relative;
+      z-index: 2;
+      padding: 20px;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .error-line {
+      animation: glitch 0.2s infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes glitch {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-1px); }
+      40% { transform: translateX(1px); }
+      60% { transform: translateX(-2px); }
+      80% { transform: translateX(2px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+
+
+
+  <div class="overlay"></div>
+  <div class="countdown">0 detik</div>
+
+  <div class="terminal" id="terminal">
+    <div class="error-line">[ERROR] Boot process failed...</div>
+    <div class="error-line">[WARNING] Intrusion signature detected...</div>
+    <div class="error-line">[FATAL] Core dump initialized...</div>
+  </div>
+
+  <audio id="errorSound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+
+  <script>
+    const terminal = document.getElementById("terminal");
+    const countdown = document.querySelector(".countdown");
+    const errorSound = document.getElementById("errorSound");
+    let counter = 0;
+
+    function generateLongErrorText(number) {
+      const base = `[ERROR ${number}] SYSTEM FAILURE DETECTED >> CODE 0x${number.toString(16).padStart(4, '0')} `;
+      return base.repeat(8);
+    }
+
+    setInterval(() => {
+      counter++;
+      countdown.textContent = `${counter} detik`;
+
+      const newLine = document.createElement("div");
+      newLine.classList.add("error-line");
+      newLine.textContent = generateLongErrorText(counter);
+      terminal.appendChild(newLine);
+
+      if (terminal.children.length > 100) {
+        terminal.removeChild(terminal.children[0]);
+      }
+
+      errorSound.currentTime = 0;
+      errorSound.play();
+    }, 1000);
+  </script>
+</body>
+</html>
